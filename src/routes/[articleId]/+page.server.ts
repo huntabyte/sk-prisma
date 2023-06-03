@@ -1,6 +1,8 @@
 import type { Actions, PageServerLoad } from "./$types"
-import { prisma } from "$lib/server/prisma"
+import { PrismaClient } from '@prisma/client'
 import { error, fail } from "@sveltejs/kit"
+
+const prisma = new PrismaClient()
 
 export const load: PageServerLoad = async ({ params }) => {
 	const getArticle = async () => {

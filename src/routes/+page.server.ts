@@ -1,10 +1,12 @@
-import type { Actions, PageServerLoad } from "./$types"
-import { prisma } from "$lib/server/prisma"
-import { fail } from "@sveltejs/kit"
+import type { Actions, PageServerLoad } from './$types'
+import { PrismaClient } from '@prisma/client'
+import { fail } from '@sveltejs/kit'
+
+const prisma = new PrismaClient()
 
 export const load: PageServerLoad = async () => {
 	return {
-		articles: await prisma.article.findMany(),
+		articles: await prisma.article.findMany()
 	}
 }
 
@@ -19,39 +21,39 @@ export const actions: Actions = {
 			await prisma.article.create({
 				data: {
 					title,
-					content,
-				},
+					content
+				}
 			})
 		} catch (err) {
 			console.error(err)
-			return fail(500, { message: "Could not create the article." })
+			return fail(500, { message: 'Could not create the article.' })
 		}
 
 		return {
-			status: 201,
+			status: 201
 		}
 	},
 	deleteArticle: async ({ url }) => {
-		const id = url.searchParams.get("id")
+		const id = url.searchParams.get('id')
 		if (!id) {
-			return fail(400, { message: "Invalid request" })
+			return fail(400, { message: 'Invalid request' })
 		}
 
 		try {
 			await prisma.article.delete({
 				where: {
-					id: Number(id),
-				},
+					id: Number(id)
+				}
 			})
 		} catch (err) {
 			console.error(err)
 			return fail(500, {
-				message: "Something went wrong deleting your article",
+				message: 'Something went wrong deleting your article'
 			})
 		}
 
 		return {
-			status: 200,
+			status: 200
 		}
-	},
+	}
 }
